@@ -93,13 +93,13 @@ export default function PassportScreen() {
   return (
     <AppBackground>
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 50 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 8 }}>
           <Text
             style={{
               fontSize: 30,
               fontFamily: "SerifDisplay",
               color: colors.textPrimary,
-              marginBottom: 4,
+              marginBottom: 2,
               textAlign: "center",
             }}
           >
@@ -109,7 +109,7 @@ export default function PassportScreen() {
           <Text
             style={{
               color: colors.textSecondary,
-              marginBottom: 4,
+              marginBottom: 0,
               fontSize: 13,
               letterSpacing: 1,
               textAlign: "center",
@@ -123,7 +123,7 @@ export default function PassportScreen() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              marginBottom: 5,
+              marginBottom: 0,
             }}
           >
             <View

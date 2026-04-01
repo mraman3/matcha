@@ -205,7 +205,7 @@ export default function AddCafeScreen({
         <View
           style={{
             paddingHorizontal: 12,
-            paddingTop: 35,
+            paddingTop: 0,
             alignItems: "center",
             flexDirection: "row",
           }}

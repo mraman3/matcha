@@ -68,12 +68,12 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
 
   return (
     <AppBackground>
-      <View style={{ flex: 1, padding: 16, paddingTop: 20, paddingBottom: 0 }}>
+      <View style={{ flex: 1, padding: 16, paddingTop: 18, paddingBottom: 0 }}>
         <View
           style={{
             alignItems: "center",
-            marginBottom: 18,
-            marginTop: 40,
+            marginBottom: 4,
+            marginTop: 0,
           }}
         >
           <Text
@@ -81,7 +81,7 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
               fontSize: 30,
               fontFamily: "SerifDisplay",
               color: colors.textPrimary,
-              marginBottom: 4,
+              marginBottom: 2,
             }}
           >
             Discover
@@ -92,7 +92,7 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
               fontSize: 13,
               color: colors.textSecondary,
               letterSpacing: 1.4,
-              marginBottom: 8,
+              marginBottom: 0,
             }}
           >
             MATCHA SPOTS
@@ -136,7 +136,7 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 18,
+            marginBottom: 0,
           }}
         >
           <TextInput

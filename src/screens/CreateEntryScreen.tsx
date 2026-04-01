@@ -206,7 +206,7 @@ export default function CreateEntryScreen({
         <View
           style={{
             paddingHorizontal: 12,
-            paddingTop: 35,
+            paddingTop: 0,
             alignItems: "center",
             flexDirection: "row",
           }}
