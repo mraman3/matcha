@@ -224,7 +224,6 @@ export default function PassportCard({ entry, onDelete }: Props) {
           >
             ❦
           </Text>
-
           <Text
             style={{
               position: "absolute",
@@ -251,7 +250,6 @@ export default function PassportCard({ entry, onDelete }: Props) {
           >
             ❦
           </Text>
-
           <Text
             style={{
               position: "absolute",
@@ -278,7 +276,7 @@ export default function PassportCard({ entry, onDelete }: Props) {
             <View
               style={{
                 width: "50%",
-                paddingTop: 5,
+                paddingTop: 0,
                 paddingRight: 14,
                 paddingBottom: 14,
               }}
@@ -289,7 +287,7 @@ export default function PassportCard({ entry, onDelete }: Props) {
             <View
               style={{
                 width: "50%",
-                paddingTop: 5,
+                paddingTop: 0,
                 paddingLeft: 14,
                 paddingBottom: 14,
               }}
@@ -300,7 +298,7 @@ export default function PassportCard({ entry, onDelete }: Props) {
             <View
               style={{
                 width: "50%",
-                paddingTop: 7,
+                paddingTop: 0,
                 paddingRight: 14,
               }}
             >
@@ -310,33 +308,30 @@ export default function PassportCard({ entry, onDelete }: Props) {
             <View
               style={{
                 width: "50%",
-                paddingTop: 7,
+                paddingTop: 0,
                 paddingLeft: 14,
               }}
             >
-              <PassportRatingCell
-                label="Manny's Rating"
-                value={entry.rating_mannys}
-              />
+              <PassportRatingCell label="Manny's Rating" value={entry.rating_mannys} />
             </View>
           </View>
         </View>
 
-       <View style={{ position: "relative", minHeight: 90, marginBottom: 12 }}>
-  <Image
-    source={selectedStamp}
-    style={{
-      position: "absolute",
-      width: 180,
-      height: 180,
-      left: stampLeft,
-      top: stampTop,
-      opacity: 0.55,
-      transform: [{ rotate: `${stampRotation}deg` }],
-    }}
-    resizeMode="contain"
-  />
-</View>
+        <View style={{ position: "relative", minHeight: 90, marginBottom: 12 }}>
+          <Image
+            source={selectedStamp}
+            style={{
+              position: "absolute",
+              width: 180,
+              height: 180,
+              left: stampLeft,
+              top: stampTop,
+              opacity: 0.55,
+              transform: [{ rotate: `${stampRotation}deg` }],
+            }}
+            resizeMode="contain"
+          />
+        </View>
 
         {/* Notes Box */}
         {entry.notes ? (
