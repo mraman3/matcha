@@ -30,7 +30,7 @@ export default function CafeDetailScreen({
         <View
           style={{
             paddingHorizontal: 12,
-            paddingTop: 18,
+            paddingTop: 0,
             alignItems: "center",
             flexDirection: "row",
           }}

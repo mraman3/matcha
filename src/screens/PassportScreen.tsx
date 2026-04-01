@@ -93,7 +93,7 @@ export default function PassportScreen() {
   return (
     <AppBackground>
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 8 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 0 }}>
           <Text
             style={{
               fontSize: 30,

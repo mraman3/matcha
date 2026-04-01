@@ -199,6 +199,7 @@ export default function CreateEntryScreen({
       <ScrollView
         contentContainerStyle={{
           padding: 18,
+          paddingTop: 0,
           paddingBottom: 34,
         }}
         showsVerticalScrollIndicator={false}

@@ -68,7 +68,7 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
 
   return (
     <AppBackground>
-      <View style={{ flex: 1, padding: 16, paddingTop: 18, paddingBottom: 0 }}>
+      <View style={{ flex: 1, padding: 16, paddingTop: 0, paddingBottom: 0 }}>
         <View
           style={{
             alignItems: "center",

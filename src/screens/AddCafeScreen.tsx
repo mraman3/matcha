@@ -198,6 +198,7 @@ export default function AddCafeScreen({
       <ScrollView
         contentContainerStyle={{
           padding: 18,
+          paddingTop: 0,
           paddingBottom: 32,
         }}
         showsVerticalScrollIndicator={false}
