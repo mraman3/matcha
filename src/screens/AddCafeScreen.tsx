@@ -1,14 +1,6 @@
 import AppBackground from "../components/AppBackground";
 import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, Image, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -179,12 +171,17 @@ export default function AddCafeScreen({
         tags: selectedTags,
       });
 
-      Alert.alert("Saved", "Café added successfully.", [
-        {
-          text: "Open Café",
-          onPress: () => navigation.replace("CafeDetail", { cafe }),
-        },
-      ]);
+      if (Platform.OS === "web") {
+        window.alert("Café added successfully.");
+        navigation.navigate("DiscoverHome");
+      } else {
+        Alert.alert("Saved", "Café added successfully.", [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("DiscoverHome"),
+          },
+        ]);
+      }
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Failed to add café.");
