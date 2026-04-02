@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import {
     View,
     Text,
@@ -28,8 +28,9 @@ export default function BirthdaySplashScreen({ onFinish }: Props) {
     const stampRotate = useRef(new Animated.Value(-8)).current;
     const splashScreenTime = 3500;
 
-    const randomStamp =
-        splashStamps[Math.floor(Math.random() * splashStamps.length)];
+    const randomStamp = useMemo(() => {
+        return splashStamps[Math.floor(Math.random() * splashStamps.length)];
+    }, []);
 
     useEffect(() => {
         Animated.parallel([
