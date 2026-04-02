@@ -1,4 +1,5 @@
 import "react-native-gesture-handler";
+import { useState } from "react";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -10,6 +11,7 @@ import CafeDetailScreen from "./src/screens/CafeDetailScreen";
 import CreateEntryScreen from "./src/screens/CreateEntryScreen";
 import PassportScreen from "./src/screens/PassportScreen";
 import AddCafeScreen from "./src/screens/AddCafeScreen";
+import BirthdaySplashScreen from "./src/components/BirthdaySplashScreen";
 
 import {
   DiscoverStackParamList,
@@ -52,7 +54,13 @@ export default function App() {
     SerifDisplay: require("./assets/fonts/SerifDisplay.ttf"),
   });
 
+  const [showBirthdaySplash, setShowBirthdaySplash] = useState(true);
+
   if (!fontsLoaded) return null;
+
+  if (showBirthdaySplash) {
+    return <BirthdaySplashScreen onFinish={() => setShowBirthdaySplash(false)} />;
+  }
 
   return (
     <NavigationContainer>
