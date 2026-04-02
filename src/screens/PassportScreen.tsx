@@ -68,9 +68,16 @@ export default function PassportScreen() {
           style={{
             flex: 1,
             padding: 16,
+
           }}
         >
-          <Text>Loading passport...</Text>
+          <Text style={{
+            fontSize: 22,
+            fontFamily: "SerifDisplay",
+            color: colors.textPrimary,
+            textAlign: "center",
+            marginTop: 28,
+          }}>Loading passport...</Text>
         </View>
       </AppBackground>
     );
