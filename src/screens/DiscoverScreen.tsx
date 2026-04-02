@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -15,6 +9,7 @@ import { DiscoverStackParamList } from "../types/navigation";
 import AppBackground from "../components/AppBackground";
 import { colors } from "../theme/theme";
 import CafeCard from "../components/CafeCard";
+import { deleteCafe } from "../services/deleteCafe";
 
 type DiscoverScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -65,6 +60,16 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
 
   const hasNoCafes = !loading && cafes.length === 0;
   const hasNoSearchResults = !loading && cafes.length > 0 && filteredCafes.length === 0;
+
+  async function handleDeleteCafe(cafeId: string, heroImageUrl?: string | null) {
+    try {
+      await deleteCafe(cafeId, heroImageUrl);
+      await loadCafes();
+    } catch (error) {
+      console.error("Delete cafe failed:", error);
+      Alert.alert("Error", "Failed to delete café.");
+    }
+  }
 
   return (
     <AppBackground>
@@ -270,6 +275,8 @@ export default function DiscoverScreen({ navigation }: DiscoverScreenProps) {
               <CafeCard
                 cafe={item}
                 onPress={() => navigation.navigate("CafeDetail", { cafe: item })}
+                onDelete={() => handleDeleteCafe(item.id, item.hero_image_url)}
+
               />
             )}
           />

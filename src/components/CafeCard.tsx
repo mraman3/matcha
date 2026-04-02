@@ -1,10 +1,12 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, Platform } from "react-native";
 import { Cafe } from "../types/database";
 import { colors } from "../theme/theme";
 
 type Props = {
   cafe: Cafe;
   onPress: () => void;
+  onDelete: () => void;
+
 };
 
 const placeholderImage =
@@ -36,7 +38,7 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-export default function CafeCard({ cafe, onPress }: Props) {
+export default function CafeCard({ cafe, onPress, onDelete }: Props) {
   const tags = cafe.tags?.length ? cafe.tags : [];
 
   return (
@@ -50,6 +52,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
         overflow: "hidden",
       }}
     >
+      {/** Hero Image */}
       <View style={{ position: "relative" }}>
         <Image
           source={{ uri: cafe.hero_image_url || placeholderImage }}
@@ -75,6 +78,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
         />
       </View>
 
+      {/** Cafe Name */}
       <View style={{ padding: 16 }}>
         <Text
           style={{
@@ -88,6 +92,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
           {cafe.name}
         </Text>
 
+        {/** Cafe Address */}
         <Text
           style={{
             color: colors.textSecondary,
@@ -100,6 +105,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
           {cafe.city ? `, ${cafe.city}` : ""}
         </Text>
 
+        {/** Divider Line */}
         <View
           style={{
             height: 1,
@@ -108,6 +114,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
           }}
         />
 
+        {/** Cafe Tags */}
         {tags.length > 0 ? (
           <View
             style={{
@@ -123,6 +130,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
           </View>
         ) : null}
 
+        {/** View Café Button */}
         <TouchableOpacity
           onPress={onPress}
           style={{
@@ -130,6 +138,7 @@ export default function CafeCard({ cafe, onPress }: Props) {
             paddingVertical: 14,
             borderRadius: 16,
             alignItems: "center",
+            marginBottom: 10,
           }}
         >
           <Text
@@ -140,6 +149,48 @@ export default function CafeCard({ cafe, onPress }: Props) {
             }}
           >
             View Café
+          </Text>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity
+          onPress={() => {
+            if (Platform.OS === "web") {
+              const confirmed = window.confirm(
+                "Are you sure you want to delete this café? This will also remove its photo."
+              );
+
+              if (confirmed) {
+                onDelete();
+              }
+
+              return;
+            }
+
+            Alert.alert(
+              "Delete café?",
+              "Are you sure you want to delete this café? This will also remove its photo.",
+              [
+                { text: "Cancel", style: "cancel" },
+                { text: "Delete", style: "destructive", onPress: onDelete },
+              ]
+            );
+          }}
+          style={{
+            backgroundColor: "#EEE7DB",
+            paddingVertical: 12,
+            borderRadius: 16,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontWeight: "700",
+              fontSize: 15,
+            }}
+          >
+            Delete Café
           </Text>
         </TouchableOpacity>
       </View>
