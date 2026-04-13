@@ -123,6 +123,7 @@ export default function CreateEntryScreen({
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
   const [selectedImageName, setSelectedImageName] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   async function handlePickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -150,42 +151,42 @@ export default function CreateEntryScreen({
   }
 
   async function handleSave() {
-  try {
-    setSaving(true);
-    const entry = await createPassportEntry({
-      profile_id: "11111111-1111-1111-1111-111111111111",
-      cafe_id: cafe.id,
-      visited_at: new Date().toISOString(),
-      rating_overall: ratingOverall,
-      rating_matcha: ratingMatcha,
-      rating_vibe: ratingVibe,
-      rating_mannys: ratingMannys,
-      price_level: priceLevel,
-      would_return: wouldReturn,
-      notes,
-    });
-
-    if (selectedImageUri) {
-      const uploadedPhotoUrl = await uploadEntryPhoto({
-        uri: selectedImageUri,
-        fileName: selectedImageName,
+    try {
+      setSaving(true);
+      const entry = await createPassportEntry({
+        profile_id: "11111111-1111-1111-1111-111111111111",
+        cafe_id: cafe.id,
+        visited_at: new Date().toISOString(),
+        rating_overall: ratingOverall,
+        rating_matcha: ratingMatcha,
+        rating_vibe: ratingVibe,
+        rating_mannys: ratingMannys,
+        price_level: priceLevel,
+        would_return: wouldReturn,
+        notes,
       });
 
-      const photoRow = await createEntryPhoto({
-        entry_id: entry.id,
-        storage_path: uploadedPhotoUrl,
-      });
+      if (selectedImageUri) {
+        const uploadedPhotoUrl = await uploadEntryPhoto({
+          uri: selectedImageUri,
+          fileName: selectedImageName,
+        });
+
+        const photoRow = await createEntryPhoto({
+          entry_id: entry.id,
+          storage_path: uploadedPhotoUrl,
+        });
+      }
+
+      Alert.alert("Saved", "Passport entry created successfully.");
+      navigation.goBack();
+    } catch (error) {
+      console.error("handleSave failed:", error);
+      Alert.alert("Error", "Failed to save passport entry.");
+    } finally {
+      setSaving(false);
     }
-
-    Alert.alert("Saved", "Passport entry created successfully.");
-    navigation.goBack();
-  } catch (error) {
-    console.error("handleSave failed:", error);
-    Alert.alert("Error", "Failed to save passport entry.");
-  } finally {
-    setSaving(false);
   }
-}
 
   const today = new Date().toLocaleDateString(undefined, {
     month: "short",
@@ -197,6 +198,7 @@ export default function CreateEntryScreen({
   return (
     <AppBackground>
       <ScrollView
+        scrollEnabled={scrollEnabled}
         contentContainerStyle={{
           padding: 18,
           paddingTop: 0,
@@ -321,7 +323,9 @@ export default function CreateEntryScreen({
               centered
               showReset={false}
               starColor="#6F7F63"
-              starSize={38}
+              starSize={35}
+              onSlideStart={() => setScrollEnabled(false)}
+              onSlideEnd={() => setScrollEnabled(true)}
             />
           </View>
 
@@ -331,18 +335,24 @@ export default function CreateEntryScreen({
             label="Matcha"
             value={ratingMatcha}
             onChange={setRatingMatcha}
+            onSlideStart={() => setScrollEnabled(false)}
+            onSlideEnd={() => setScrollEnabled(true)}
           />
 
           <EntryStarRow
             label="Vibe"
             value={ratingVibe}
             onChange={setRatingVibe}
+            onSlideStart={() => setScrollEnabled(false)}
+            onSlideEnd={() => setScrollEnabled(true)}
           />
 
           <EntryStarRow
             label="Manny"
             value={ratingMannys}
             onChange={setRatingMannys}
+            onSlideStart={() => setScrollEnabled(false)}
+            onSlideEnd={() => setScrollEnabled(true)}
           />
 
           <EntryPriceRow value={priceLevel} onChange={setPriceLevel} />
