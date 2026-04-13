@@ -5,6 +5,7 @@ import {
   FlatList,
   RefreshControl,
   Alert,
+  Platform,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -12,6 +13,7 @@ import {
   PassportHistoryItem,
 } from "../services/passportHistory";
 import { deletePassportEntry } from "../services/deletePassportEntry";
+import { deleteEntryPhotosForEntry } from "../services/deleteEntryPhotosForEntry";
 import PassportCard from "../components/PassportCard";
 import { colors } from "../theme/theme";
 import AppBackground from "../components/AppBackground";
@@ -53,12 +55,48 @@ export default function PassportScreen() {
 
   async function handleDelete(entryId: string) {
     try {
+      await deleteEntryPhotosForEntry(entryId);
       await deletePassportEntry(entryId);
       await loadHistory(true);
     } catch (err) {
       console.error("Delete failed:", err);
-      Alert.alert("Error", "Failed to delete entry.");
+
+      if (Platform.OS === "web") {
+        window.alert("Failed to delete entry.");
+      } else {
+        Alert.alert("Error", "Failed to delete entry.");
+      }
     }
+  }
+
+  function handleConfirmDelete(entryId: string) {
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this passport entry? This will also delete its photo and cannot be undone."
+      );
+
+      if (confirmed) {
+        handleDelete(entryId);
+      }
+
+      return;
+    }
+
+    Alert.alert(
+      "Delete passport entry?",
+      "Are you sure you want to delete this entry? This will also delete its photo and cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDelete(entryId),
+        },
+      ]
+    );
   }
 
   if (loading) {
@@ -206,7 +244,7 @@ export default function PassportScreen() {
             renderItem={({ item }) => (
               <PassportCard
                 entry={item}
-                onDelete={() => handleDelete(item.id)}
+                onDelete={() => handleConfirmDelete(item.id)}
               />
             )}
           />
