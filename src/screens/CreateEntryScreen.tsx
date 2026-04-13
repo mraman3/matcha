@@ -7,8 +7,10 @@ import {
   Alert,
   ScrollView,
   Image,
+  Platform
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { createPassportEntry } from "../services/passportEntries";
@@ -112,7 +114,8 @@ export default function CreateEntryScreen({
   navigation,
 }: CreateEntryScreenProps) {
   const { cafe } = route.params;
-
+  const [visitDate, setVisitDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [ratingOverall, setRatingOverall] = useState(0);
   const [ratingMatcha, setRatingMatcha] = useState(0);
   const [ratingVibe, setRatingVibe] = useState(0);
@@ -156,7 +159,7 @@ export default function CreateEntryScreen({
       const entry = await createPassportEntry({
         profile_id: "11111111-1111-1111-1111-111111111111",
         cafe_id: cafe.id,
-        visited_at: new Date().toISOString(),
+        visited_at: visitDate.toISOString(),
         rating_overall: ratingOverall,
         rating_matcha: ratingMatcha,
         rating_vibe: ratingVibe,
@@ -188,12 +191,11 @@ export default function CreateEntryScreen({
     }
   }
 
-  const today = new Date().toLocaleDateString(undefined, {
+  const formattedVisitDate = visitDate.toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
 
   return (
     <AppBackground>
@@ -299,17 +301,71 @@ export default function CreateEntryScreen({
             {cafe.name}
           </Text>
 
-          <Text
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            activeOpacity={0.85}
             style={{
-              textAlign: "center",
-              fontSize: 12,
-              color: "#9A9187",
+              alignSelf: "center",
+              paddingHorizontal: 14,
+              paddingVertical: 8,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: "#DDD4C6",
+              backgroundColor: "rgba(255,253,248,0.7)",
               marginBottom: 14,
-              letterSpacing: 0.2,
             }}
           >
-            {today}
-          </Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 12,
+                color: "#9A9187",
+                letterSpacing: 0.2,
+              }}
+            >
+              {formattedVisitDate}
+            </Text>
+          </TouchableOpacity>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={visitDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              maximumDate={new Date()}
+              onChange={(_, selectedDate) => {
+                if (Platform.OS !== "ios") {
+                  setShowDatePicker(false);
+                }
+
+                if (selectedDate) {
+                  setVisitDate(selectedDate);
+                }
+              }}
+            />
+          )}
+
+          {Platform.OS === "ios" && showDatePicker && (
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(false)}
+              style={{
+                alignSelf: "center",
+                marginBottom: 14,
+                marginTop: -2,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  letterSpacing: 1,
+                  textTransform: "uppercase",
+                  color: "#7E8D70",
+                }}
+              >
+                Done
+              </Text>
+            </TouchableOpacity>
+          )}
 
           <View
             style={{
