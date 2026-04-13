@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { View, Text, PanResponder, LayoutChangeEvent } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../theme/theme";
@@ -41,56 +41,42 @@ export default function RatingInput({
   onSlideEnd,
 }: Props) {
   const [trackWidth, setTrackWidth] = useState(0);
-  const trackPageX = useRef(0);
 
-  function updateFromTouch(pageX: number) {
+  function updateFromTouch(locationX: number) {
     if (!trackWidth) return;
 
-    const relativeX = clamp(pageX - trackPageX.current, 0, trackWidth);
-    const rawValue = (relativeX / trackWidth) * 5;
+    const clampedX = clamp(locationX, 0, trackWidth);
+    const rawValue = (clampedX / trackWidth) * 5;
     const snappedValue = snapToHalf(rawValue);
 
     onChange(clamp(snappedValue, 0, 5));
   }
 
-const panResponder = useMemo(
-  () =>
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt) => {
-        onSlideStart?.();
-        updateFromTouch(evt.nativeEvent.pageX);
-      },
-      onPanResponderMove: (evt) => {
-        updateFromTouch(evt.nativeEvent.pageX);
-      },
-      onPanResponderRelease: () => {
-        onSlideEnd?.();
-      },
-      onPanResponderTerminate: () => {
-        onSlideEnd?.();
-      },
-    }),
-  [trackWidth, onSlideStart, onSlideEnd]
-);
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: (evt) => {
+          onSlideStart?.();
+          updateFromTouch(evt.nativeEvent.locationX);
+        },
+        onPanResponderMove: (evt) => {
+          updateFromTouch(evt.nativeEvent.locationX);
+        },
+        onPanResponderRelease: () => {
+          onSlideEnd?.();
+        },
+        onPanResponderTerminate: () => {
+          onSlideEnd?.();
+        },
+      }),
+    [trackWidth, onSlideStart, onSlideEnd]
+  );
 
   function handleTrackLayout(event: LayoutChangeEvent) {
-    const { width, x } = event.nativeEvent.layout;
+    const { width } = event.nativeEvent.layout;
     setTrackWidth(width);
-
-    // layout.x is parent-relative, so measureInWindow is safer for pageX math
-    event.target &&
-      (event.currentTarget as any)?.measureInWindow?.(
-        (pageX: number) => {
-          trackPageX.current = pageX;
-        }
-      );
-
-    // fallback if measureInWindow is unavailable in this environment
-    if (!trackPageX.current) {
-      trackPageX.current = x;
-    }
   }
 
   return (
@@ -137,7 +123,7 @@ const panResponder = useMemo(
         }}
       >
         {[0, 1, 2, 3, 4].map((i) => (
-          <View key={i} style={{ marginRight: 6 }}>
+          <View key={i} style={{ marginRight: i === 4 ? 0 : 6 }}>
             <FontAwesome
               name={getStarIcon(i, value)}
               size={starSize}
