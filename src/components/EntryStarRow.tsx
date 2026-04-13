@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { View, Text, PanResponder, LayoutChangeEvent } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../theme/theme";
@@ -33,54 +33,41 @@ export default function EntryStarRow({
   onSlideEnd,
 }: Props) {
   const [trackWidth, setTrackWidth] = useState(0);
-  const trackX = useRef(0);
 
-  function updateFromTouch(pageX: number) {
+  function updateFromTouch(locationX: number) {
     if (!trackWidth) return;
 
-    const relativeX = clamp(pageX - trackX.current, 0, trackWidth);
-    const rawValue = (relativeX / trackWidth) * 5;
+    const clampedX = clamp(locationX, 0, trackWidth);
+    const rawValue = (clampedX / trackWidth) * 5;
     const snappedValue = snapToHalf(rawValue);
 
     onChange(clamp(snappedValue, 0, 5));
   }
 
-const panResponder = useMemo(
-  () =>
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt) => {
-        onSlideStart?.();
-        updateFromTouch(evt.nativeEvent.pageX);
-      },
-      onPanResponderMove: (evt) => {
-        updateFromTouch(evt.nativeEvent.pageX);
-      },
-      onPanResponderRelease: () => {
-        onSlideEnd?.();
-      },
-      onPanResponderTerminate: () => {
-        onSlideEnd?.();
-      },
-    }),
-  [trackWidth, onSlideStart, onSlideEnd]
-);
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: (evt) => {
+          onSlideStart?.();
+          updateFromTouch(evt.nativeEvent.locationX);
+        },
+        onPanResponderMove: (evt) => {
+          updateFromTouch(evt.nativeEvent.locationX);
+        },
+        onPanResponderRelease: () => {
+          onSlideEnd?.();
+        },
+        onPanResponderTerminate: () => {
+          onSlideEnd?.();
+        },
+      }),
+    [trackWidth, onSlideStart, onSlideEnd]
+  );
 
   function handleTrackLayout(event: LayoutChangeEvent) {
     setTrackWidth(event.nativeEvent.layout.width);
-
-    const target = event.currentTarget as unknown as {
-      measureInWindow?: (
-        callback: (x: number, y: number, width: number, height: number) => void
-      ) => void;
-    };
-
-    if (target?.measureInWindow) {
-      target.measureInWindow((x) => {
-        trackX.current = x;
-      });
-    }
   }
 
   return (
@@ -114,7 +101,7 @@ const panResponder = useMemo(
           style={{ flexDirection: "row" }}
         >
           {[0, 1, 2, 3, 4].map((i) => (
-            <View key={i} style={{ marginLeft: 3 }}>
+            <View key={i} style={{ marginLeft: i === 0 ? 0 : 3 }}>
               <FontAwesome
                 name={getStarIcon(i, value)}
                 size={35}
