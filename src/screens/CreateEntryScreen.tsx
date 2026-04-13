@@ -7,7 +7,7 @@ import {
   Alert,
   ScrollView,
   Image,
-  Platform
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -128,6 +128,14 @@ export default function CreateEntryScreen({
   const [saving, setSaving] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
+  function handleWebDateChange(event: any) {
+    const value = event?.target?.value;
+    if (!value) return;
+
+    const nextDate = new Date(`${value}T12:00:00`);
+    setVisitDate(nextDate);
+  }
+
   async function handlePickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -175,7 +183,7 @@ export default function CreateEntryScreen({
           fileName: selectedImageName,
         });
 
-        const photoRow = await createEntryPhoto({
+        await createEntryPhoto({
           entry_id: entry.id,
           storage_path: uploadedPhotoUrl,
         });
@@ -301,70 +309,97 @@ export default function CreateEntryScreen({
             {cafe.name}
           </Text>
 
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            activeOpacity={0.85}
-            style={{
-              alignSelf: "center",
-              paddingHorizontal: 14,
-              paddingVertical: 8,
-              borderRadius: 999,
-              borderWidth: 1,
-              borderColor: "#DDD4C6",
-              backgroundColor: "rgba(255,253,248,0.7)",
-              marginBottom: 14,
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 12,
-                color: "#9A9187",
-                letterSpacing: 0.2,
-              }}
-            >
-              {formattedVisitDate}
-            </Text>
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={visitDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              maximumDate={new Date()}
-              onChange={(_, selectedDate) => {
-                if (Platform.OS !== "ios") {
-                  setShowDatePicker(false);
-                }
-
-                if (selectedDate) {
-                  setVisitDate(selectedDate);
-                }
-              }}
-            />
-          )}
-
-          {Platform.OS === "ios" && showDatePicker && (
-            <TouchableOpacity
-              onPress={() => setShowDatePicker(false)}
+          {Platform.OS === "web" ? (
+            <View
               style={{
                 alignSelf: "center",
                 marginBottom: 14,
-                marginTop: -2,
               }}
             >
-              <Text
+              <input
+                type="date"
+                value={visitDate.toISOString().split("T")[0]}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={handleWebDateChange}
                 style={{
-                  fontSize: 12,
-                  letterSpacing: 1,
-                  textTransform: "uppercase",
-                  color: "#7E8D70",
+                  padding: "8px 14px",
+                  borderRadius: "999px",
+                  border: "1px solid #DDD4C6",
+                  background: "rgba(255,253,248,0.7)",
+                  color: "#9A9187",
+                  fontSize: "12px",
+                  outline: "none",
+                }}
+              />
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(true)}
+                activeOpacity={0.85}
+                style={{
+                  alignSelf: "center",
+                  paddingHorizontal: 14,
+                  paddingVertical: 8,
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: "#DDD4C6",
+                  backgroundColor: "rgba(255,253,248,0.7)",
+                  marginBottom: 14,
                 }}
               >
-                Done
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 12,
+                    color: "#9A9187",
+                    letterSpacing: 0.2,
+                  }}
+                >
+                  {formattedVisitDate}
+                </Text>
+              </TouchableOpacity>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={visitDate}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  maximumDate={new Date()}
+                  onChange={(_, selectedDate) => {
+                    if (Platform.OS !== "ios") {
+                      setShowDatePicker(false);
+                    }
+
+                    if (selectedDate) {
+                      setVisitDate(selectedDate);
+                    }
+                  }}
+                />
+              )}
+
+              {Platform.OS === "ios" && showDatePicker && (
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker(false)}
+                  style={{
+                    alignSelf: "center",
+                    marginBottom: 14,
+                    marginTop: -2,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      letterSpacing: 1,
+                      textTransform: "uppercase",
+                      color: "#7E8D70",
+                    }}
+                  >
+                    Done
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </>
           )}
 
           <View
