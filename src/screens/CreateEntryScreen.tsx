@@ -165,7 +165,7 @@ export default function CreateEntryScreen({
     try {
       setSaving(true);
       const entry = await createPassportEntry({
-        profile_id: "11111111-1111-1111-1111-111111111111",
+        profile_id: "5dc5d715-796b-4560-8f22-33aa5706d999",
         cafe_id: cafe.id,
         visited_at: visitDate.toISOString(),
         rating_overall: ratingOverall,
